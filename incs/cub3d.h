@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:14:10 by otaraki           #+#    #+#             */
-/*   Updated: 2023/11/26 23:29:46 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/06 22:38:52 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,35 @@
 
 // # include "prototypes.h"
 
+
+typedef struct s_floor
+{
+    char *floor;
+    int		r;
+    int		g;
+    int		b;
+}				t_floor;
+
+typedef struct s_ceiling
+{
+    char *ceiling;
+    int		r;
+    int		g;
+    int		b;
+}				t_ceiling;
+
+
 typedef struct s_map
 {
     int		width;
     int		height;
-    char	**map;
+    t_floor	floor;
+    t_ceiling	ceiling;
+    char    *no_path;
+    char    *so_path;
+    char    *we_path;
+    char    *ea_path;
+    char	**store_map;
 }				t_map;
 
 typedef struct s_player
@@ -66,6 +90,7 @@ typedef struct s_mlx
     void	*win;
     t_img	img;
 }				t_mlx;
+
 
 typedef struct s_cub
 {

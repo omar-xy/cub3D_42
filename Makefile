@@ -6,7 +6,7 @@
 #    By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/26 23:12:18 by otaraki           #+#    #+#              #
-#    Updated: 2023/11/26 23:38:57 by otaraki          ###   ########.fr        #
+#    Updated: 2023/12/06 18:31:21 by otaraki          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,13 +17,13 @@ EXE := cub3d
 ARCH := libft/libft.a
 MLX := minilibx/libmlx.a
 
-MLX_FLAGS := -L minilibx -lmlx -framework OpenGL -framework AppKit
+# MLX_FLAGS := -L minilibx -lmlx -framework OpenGL -framework AppKit
 
 CC := cc 
 
 # I := -I inc -I libft -I minilibx
 # L := -L libft -L minilibx
-CFLAGS := -g  -Wall -Wextra -Werror
+CFLAGS := -g  -Wall -Wextra -fsanitize=address
 # -fsanitize=address
 
 HEADER := inc/cub3d.h
@@ -41,13 +41,13 @@ m := MakefileAutoPush
 
 all : $(EXE)
 
-library:
+library :
 	make -C libft
 
-$(EXE) : $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(ARCH) $(MLX) $(MLX_FLAGS) -o $(EXE) 
+$(EXE) : $(OBJ) | library
+	$(CC) $(CFLAGS) $(OBJ) $(ARCH) -o $(EXE) 
 
-%.o : %.c $(HEADER) | library
+%.o : %.c $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
