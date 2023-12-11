@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:20:47 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/06 22:52:24 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/11 20:56:11 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,20 +60,28 @@ int		ft_error(t_cub *cub, char *str)
 
 int set_color(t_cub *cub, char **str, char flag)
 {
+    int i;
+    int j;
+    int k;
+
+    i = ft_atoi(str[0]);
+    j = ft_atoi(str[1]);
+    k = ft_atoi(str[2]);
     if (flag == 'F')
     {
-        if ((ft_atoi(str[0]) < 0 && ft_atoi(str[0]) > 255) || (ft_atoi(str[1]) < 0 && ft_atoi(str[1]) > 255) 
-            ||(ft_atoi(str[2]) < 0 && ft_atoi(str[2]) > 255))
-            return (0);
+        // if (i > 0 && i < 255)
+        //     return (0);
+        // printf("%d\n", ft_atoi(str[0]));
         cub->map.floor.r = ft_atoi(str[0]);
         cub->map.floor.g = ft_atoi(str[1]);
         cub->map.floor.b = ft_atoi(str[2]);
     }
     else if (flag == 'C')
     {
-        if ((ft_atoi(str[0]) < 0 && ft_atoi(str[0]) > 255) || (ft_atoi(str[1]) < 0 && ft_atoi(str[1]) > 255) 
-            ||(ft_atoi(str[2]) < 0 && ft_atoi(str[2]) > 255))
-                return (0);
+        // still need to check if the values are valid
+        // if (!(ft_atoi(str[0]) < 0 && ft_atoi(str[0]) > 255) || !(ft_atoi(str[1]) < 0 && ft_atoi(str[1]) > 255) 
+        //     || !(ft_atoi(str[2]) < 0 && ft_atoi(str[2]) > 255))
+        //         return (0);
         cub->map.ceiling.r = ft_atoi(str[0]);
         cub->map.ceiling.g = ft_atoi(str[1]);
         cub->map.ceiling.b = ft_atoi(str[2]);
@@ -88,27 +96,135 @@ int parse_color(t_cub *cub, char *line, char flag)
     char **str;
 
     i = 0;
-    j = 0;
-    char numbers =  ft_substr(line, 1, ft_strlen(line));
+    char *numbers =  ft_substr(line, 2, ft_strlen(line));
     str = ft_split(numbers, ',');
     while (str[i])
         i++;
-    if (i != 2)
-        return (ft_error(cub, "Error: Wrong color\n"));
+    if (i != 3)
+        return (ft_error(cub, "Error: Wrong color2\n"));
+    i = 0;
     while(str[i])
     {
+        j = 0;
         while(str[i][j])
         {
             if (!ft_isdigit(str[i][j]))
-                return (ft_error(cub, "Error: Wrong color\n"));
+                return (ft_error(cub, "Error: Wrong color3\n"));
             j++;
         }
         i++;
     }
     if (!set_color(cub, str, flag))
-        return (ft_error(cub, "Error: Wrong color\n"));
+        return (ft_error(cub, "Error: Wrong color4\n"));
+    return (1);
 }
 
+int store_textures(t_cub *cub, char *line)
+{
+    char *str;
+    int bool_color = 0;
+
+    str = ft_strtrim(line, "\n");
+    while(*str == ' ' || *str == '\t')
+        str++;
+    if (!ft_strncmp(str, "NO", 2))
+        cub->map.no_path = ft_substr(str, 3, ft_strlen(str));
+    else if (!ft_strncmp(str, "SO", 2))
+        cub->map.so_path = ft_substr(str, 3, ft_strlen(str));
+    else if (!ft_strncmp(str, "WE", 2))
+        cub->map.we_path = ft_substr(str, 3, ft_strlen(str));
+    else if (!ft_strncmp(str, "EA", 2))
+        cub->map.ea_path = ft_substr(str, 3, ft_strlen(str));
+    else if (!ft_strncmp(str, "F", 1))
+    {
+        bool_color = parse_color(cub, str, 'F');
+        if (bool_color == 0)
+            return (0);
+    }
+    else if (!ft_strncmp(str, "C", 1))
+    {
+        bool_color = parse_color(cub, str, 'C');
+        if (bool_color == 0)
+            return (0);
+    }
+    else
+        return (ft_error(cub, "Error: Wrong texture path\n"));
+    return (1);
+}
+bool detect_map(char *line)
+{
+    int i = -1;
+    while (line[++i] == ' ' || line[i] == '\t')
+        ;
+    if (line[i] == '1')
+        return (true);
+    return (false);
+}
+
+void    calculate_map_size(t_cub *cub)
+{
+    int i;
+	int j;
+    int max_width;
+
+    i = 0;
+	max_width = 0;
+    while (cub->map.store_map[i])
+        i++;
+    cub->map.height = i;
+    i = 0;
+    while(cub->map.store_map[i])
+    {
+        j = 0;
+        while(cub->map.store_map[i][j])
+            j++;
+        if (j > max_width)
+            max_width = j;
+        i++;
+    }
+    cub->map.width = max_width;
+}
+int check_map(t_cub *cub)
+{
+    //check if the map is close srounded by 1
+    char **map;
+    int i = -1;
+    int j;
+
+
+    map = cub->map.store_map;
+    while(map[++i])
+    {
+        j = -1;
+        while(map[i][++j])
+        {
+            if (!(map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'W' || map[i][j] == 'E'
+                    || map[i][j] == '0' || map[i][j] == '1' || map[i][j] == ' '))
+                return (0);
+            if (i == 0 || j == 0 || i == cub->map.height || j == cub->map.width)
+            {
+                if (map[i][j] != '1' && map[i][j] != ' ')
+                {
+                    printf("[i,j][%d,%d]--> [%d]\n", i, j, map[i][j]);
+                    return (0);
+                }
+            }
+            else if (i > 0 && j > 0 && i < cub->map.height && j < cub->map.width && map[i][j] == '0')
+            {
+                if (map[i][j + 1] == ' ' || map[i][j - 1] == ' ' || map[i + 1][j] == ' ' || map[i - 1][j] == ' ')
+                    return (0);
+            }
+            // if (map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'W' || map[i][j] == 'E')
+            // {
+            //     cub->player.x = j;
+            //     cub->player.y = i;
+            //     // cub->map.player.dir = map[i][j];
+            // }
+        }
+		
+    }
+	return (1);
+}
 int ft_parse_map(t_cub *cub, int fd)
 {
     char *line;
@@ -121,56 +237,28 @@ int ft_parse_map(t_cub *cub, int fd)
         line =  get_next_line(fd);
         if (!line)
             break;
-        hold_file = ft_strjoin(hold_file, line);
+        if (line[0] != '\n' && !detect_map(line) && !store_textures(cub, line))
+            return (0);
+        else if (detect_map(line) || line[0] == '\n')
+            hold_file = ft_strjoin(hold_file, line);
+        free(line);
     }
+    hold_file = ft_strtrim(hold_file, "\n");
+    if (ft_strnstr(hold_file, "\n\n", ft_strlen(hold_file)))
+        return (ft_error(cub, "Error: Wrong map, 1\n"));
     cub->map.store_map = ft_split(hold_file, '\n');
     free(line);
     free(hold_file);
-    // i need to parse the textures
-
-    int i;
-    char *str;
-
-    i = 0;
-    while(cub->map.store_map[i])
-    {
-        str = ft_strtrim(cub->map.store_map[i], " ");
-        i++;
-    }
-    i = 0;
-    while(cub->map.store_map[i])
-    {
-        printf("%s\n", cub->map.store_map[i]);
-        i++;
-    }
-    i = 0;
-    while(cub->map.store_map[i] && i < 4)
-    {
-        if (!ft_strncmp(cub->map.store_map[i], "NO", 2))
-            cub->map.no_path = ft_substr(cub->map.store_map[i], 3, ft_strlen(cub->map.store_map[i]));
-        else if (!ft_strncmp(cub->map.store_map[i], "SO", 2))
-            cub->map.so_path = ft_substr(cub->map.store_map[i], 3, ft_strlen(cub->map.store_map[i]));
-        else if (!ft_strncmp(cub->map.store_map[i], "WE", 2))
-            cub->map.we_path = ft_substr(cub->map.store_map[i], 3, ft_strlen(cub->map.store_map[i]));
-        else if (!ft_strncmp(cub->map.store_map[i], "EA", 2))
-            cub->map.ea_path = ft_substr(cub->map.store_map[i], 3, ft_strlen(cub->map.store_map[i]));
-        else
-            return (ft_error(cub, "Error: Wrong texture path\n"));
-        i++;
-    }
-    while(cub->map.store_map[i] && i < 6)
-    {
-        if (!ft_strncmp(cub->map.store_map[i], "F", 1) || !ft_strncmp(cub->map.store_map[i], "C", 1))
-        {
-            if (!parse_color(cub, cub->map.store_map[i], cub->map.store_map[i][0]))
-                return (0);
-        }
-        else
-            return (ft_error(cub, "Error: Wrong color\n"));
-        i++;
-    }
+    // int i = -1;
+    // while (cub->map.store_map[++i])
+    //     printf("%s\n", cub->map.store_map[i]);
     // parse map check if map is valid
-    check_map(cub, &cub->map.store_map[i]);
+    calculate_map_size(cub);
+	// printf("width: %d\n", cub->map.width);
+	// printf("height: %d\n", cub->map.height);
+	// fill_empty_spaces(cub);
+    if (!check_map(cub))
+        return (ft_error(cub, "Error: Wrong map, 2\n"));
     return (1);
 }
 
@@ -184,60 +272,10 @@ int ft_parse_cub(t_cub *cub, char *arg)
         return (ft_error(cub, "Error\nCan't open file\n"));
     if (!ft_parse_map(cub, fd))
         return (0);
-    return (1);  
-}
-
-int calculate_map_height(char **map)
-{
-    int i;
-
-    i = 0;
-    while (map[i])
-        i++;
-    return (i);
-}
-
-
-int ft_check_map(t_cub *cub, char **map)
-{
-    int i;
-    int j;
-
-    i = 0;
-    cub->map.height = calculate_map_height(map);
-    while (i < cub->map.height)
-    {
-        j = 0;
-        while (j < cub->map.width)
-        {
-            if (map[i][j] == '0' || map[i][j] == '2')
-            {
-                if (i == 0 || i == cub->map.height - 1 || j == 0 || j == cub->map.width - 1)
-                    return (ft_error(cub, "Error\nMap is not closed\n"));
-                if (map[i - 1][j] == ' ' || map[i + 1][j] == ' ' || map[i][j - 1] == ' ' || map[i][j + 1] == ' ')
-                    return (ft_error(cub, "Error\nMap is not closed\n"));
-            }
-            j++;
-        }
-        i++;
-    }
     return (1);
 }
 
 
-
-// void	ft_init_cub(t_cub *cub)
-// {
-//     ft_bzero((void *)cub, sizeof(t_cub));
-    
-// }
-// int		ft_init_cub3d(t_cub *cub)
-// {
-//     ft_init_cub(cub);
-//     if (!ft_init_mlx(cub))
-//         return (0);
-//     return (1);
-// }   
 
 int		main(int argc, char **argv)
 {
