@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:20:47 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/11 20:56:11 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/11 22:56:11 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ int store_textures(t_cub *cub, char *line)
             return (0);
     }
     else
-        return (ft_error(cub, "Error: Wrong texture path\n"));
+        return (ft_error(cub, "Error: in map\n"));
     return (1);
 }
 bool detect_map(char *line)
@@ -184,6 +184,23 @@ void    calculate_map_size(t_cub *cub)
     }
     cub->map.width = max_width;
 }
+
+void fill_empty_spaces(t_cub *cub)
+{
+    int i;
+    int j;
+    char **map;
+
+    map = cub->map.store_map;
+    i = -1;
+    while(map[++i])
+    {
+        j = -1;
+        while(map[i][++j]);
+        while(!map[i[j]] && j < cub->map.width)
+            map[i][j++] = ' ';
+    }
+}
 int check_map(t_cub *cub)
 {
     //check if the map is close srounded by 1
@@ -201,7 +218,7 @@ int check_map(t_cub *cub)
             if (!(map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'W' || map[i][j] == 'E'
                     || map[i][j] == '0' || map[i][j] == '1' || map[i][j] == ' '))
                 return (0);
-            if (i == 0 || j == 0 || i == cub->map.height || j == cub->map.width)
+            if (i == 0 || i == cub->map.height - 1 || j == 0 || j == cub->map.width - 1)
             {
                 if (map[i][j] != '1' && map[i][j] != ' ')
                 {
@@ -209,19 +226,20 @@ int check_map(t_cub *cub)
                     return (0);
                 }
             }
-            else if (i > 0 && j > 0 && i < cub->map.height && j < cub->map.width && map[i][j] == '0')
+            else if (i > 0 && j > 0 && (i < cub->map.height - 1) && (j < cub->map.width - 1) && map[i][j] == '0')
             {
+                printf("[i,j][%d,%d]--> [%c]\n", i, j, map[i][j]);
                 if (map[i][j + 1] == ' ' || map[i][j - 1] == ' ' || map[i + 1][j] == ' ' || map[i - 1][j] == ' ')
                     return (0);
             }
-            // if (map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'W' || map[i][j] == 'E')
-            // {
-            //     cub->player.x = j;
-            //     cub->player.y = i;
-            //     // cub->map.player.dir = map[i][j];
-            // }
+            if (map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'W' || map[i][j] == 'E')
+            {
+                cub->player.x = j;
+                cub->player.y = i;
+                // cub->map.player.dir = map[i][j];
+            }
         }
-		
+        // printf("%s\n", map[cub->map.height - 1]);
     }
 	return (1);
 }
@@ -237,10 +255,10 @@ int ft_parse_map(t_cub *cub, int fd)
         line =  get_next_line(fd);
         if (!line)
             break;
-        if (line[0] != '\n' && !detect_map(line) && !store_textures(cub, line))
-            return (0);
-        else if (detect_map(line) || line[0] == '\n')
+        if (detect_map(line) || line[0] == '\n')
             hold_file = ft_strjoin(hold_file, line);
+        else if (line[0] != '\n' && !detect_map(line) && !store_textures(cub, line))
+            return (0);
         free(line);
     }
     hold_file = ft_strtrim(hold_file, "\n");
@@ -252,11 +270,10 @@ int ft_parse_map(t_cub *cub, int fd)
     // int i = -1;
     // while (cub->map.store_map[++i])
     //     printf("%s\n", cub->map.store_map[i]);
-    // parse map check if map is valid
     calculate_map_size(cub);
 	// printf("width: %d\n", cub->map.width);
 	// printf("height: %d\n", cub->map.height);
-	// fill_empty_spaces(cub);
+    fill_empty_spaces(cub);
     if (!check_map(cub))
         return (ft_error(cub, "Error: Wrong map, 2\n"));
     return (1);
