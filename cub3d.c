@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:20:47 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/11 23:26:35 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/11 23:35:27 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,9 +272,9 @@ int ft_parse_map(t_cub *cub, int fd)
     free(hold_file);
     calculate_map_size(cub);
     fill_empty_spaces(cub);
-    int i = -1;
-    while (cub->map.store_map[++i])
-        printf("[%s]\n", cub->map.store_map[i]);
+    // int i = -1;
+    // while (cub->map.store_map[++i])
+    //     printf("[%s]\n", cub->map.store_map[i]);
     if (!check_map(cub))
         return (ft_error(cub, "Error: Wrong map, 2\n"));
     return (1);
