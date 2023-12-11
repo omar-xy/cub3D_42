@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:20:47 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/11 22:56:11 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/11 23:26:35 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,11 +195,14 @@ void fill_empty_spaces(t_cub *cub)
     i = -1;
     while(map[++i])
     {
-        j = -1;
-        while(map[i][++j]);
-        while(!map[i[j]] && j < cub->map.width)
-            map[i][j++] = ' ';
+        j = ft_strlen(map[i]);
+        while(j < cub->map.width)
+        {
+            map[i] = ft_strjoin(map[i], " ");
+            j++;
+        }
     }
+    cub->map.store_map = map;
 }
 int check_map(t_cub *cub)
 {
@@ -267,13 +270,11 @@ int ft_parse_map(t_cub *cub, int fd)
     cub->map.store_map = ft_split(hold_file, '\n');
     free(line);
     free(hold_file);
-    // int i = -1;
-    // while (cub->map.store_map[++i])
-    //     printf("%s\n", cub->map.store_map[i]);
     calculate_map_size(cub);
-	// printf("width: %d\n", cub->map.width);
-	// printf("height: %d\n", cub->map.height);
     fill_empty_spaces(cub);
+    int i = -1;
+    while (cub->map.store_map[++i])
+        printf("[%s]\n", cub->map.store_map[i]);
     if (!check_map(cub))
         return (ft_error(cub, "Error: Wrong map, 2\n"));
     return (1);
