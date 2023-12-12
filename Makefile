@@ -6,7 +6,7 @@
 #    By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/26 23:12:18 by otaraki           #+#    #+#              #
-#    Updated: 2023/12/06 18:31:21 by otaraki          ###   ########.fr        #
+#    Updated: 2023/12/12 20:08:50 by otaraki          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ CFLAGS := -g  -Wall -Wextra -fsanitize=address
 
 HEADER := inc/cub3d.h
 
-FILES := cub3d
+FILES := cub3d parse_utils
 
 SRC := $(FILES:=.c)
 

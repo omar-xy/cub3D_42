@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:14:10 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/06 22:38:52 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/12 23:01:34 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ typedef struct s_player
 {
     double	x;
     double	y;
-    double	dir;
+    char	dir;
     double	fov;
 }				t_player;
 
@@ -71,7 +71,7 @@ typedef struct s_ray
 {
     double	x;
     double	y;
-    double	dir;
+    char	dir;
     double	fov;
 }				t_ray;
 
@@ -102,4 +102,13 @@ typedef struct s_cub
 
 
 
+bool    detect_map(char *line);
+int     store_textures(t_cub *cub, char *line);
+int     parse_color(t_cub *cub, char *line, char flag);
+int     set_color(t_cub *cub, char **str, char flag);
+void    calculate_map_size(t_cub *cub);
+void    fill_empty_spaces(t_cub *cub);
+int     check_map(t_cub *cub);
+int     check_textures(t_cub *cub);
+int		ft_error(t_cub *cub, char *str);
 #endif
