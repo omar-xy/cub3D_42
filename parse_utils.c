@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 20:03:19 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/12 23:52:23 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/13 04:17:23 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,40 +107,42 @@ int parse_color(t_cub *cub, char *line, char flag)
 int store_textures(t_cub *cub, char *line)
 {
     char *str;
-    char **str2;
+    char *trimed_str;
+    // char **str2;
     int bool_color = 0;
 
     str = ft_strtrim(line, "\n");
     if (!str)
         return (0);
-    str2 = ft_split(str, ' ');
-    if (!str2)
-        return (0);
-    if (str2[1])
-    {
-        if (!ft_strncmp(str2[0], "NO", 3))
-            cub->map.no_path = ft_strdup(str2[1]);
-        else if (!ft_strncmp(str2[0], "SO", 3))
-            cub->map.so_path = ft_strdup(str2[1]);
-        else if (!ft_strncmp(str2[0], "WE", 3))
-            cub->map.we_path = ft_strdup(str2[1]);
-        else if (!ft_strncmp(str2[0], "EA", 3))
-            cub->map.ea_path = ft_strdup(str2[1]);
-        else if (!ft_strncmp(str2[0], "F", 2))
+    // str2 = ft_split(str, ' ');
+    // if (!str2)
+    //     return (0);
+        if (!ft_strncmp(str, "NO ", 3))
+            cub->map.no_path = ft_strtrim(&str[2]," ");
+        else if (!ft_strncmp(str, "SO ", 3))
+            cub->map.so_path = ft_strtrim(&str[2]," ");
+        else if (!ft_strncmp(str, "WE ", 3))
+            cub->map.we_path = ft_strtrim(&str[2]," ");
+        else if (!ft_strncmp(str, "EA ", 3))
+            cub->map.ea_path = ft_strtrim(&str[2]," ");
+        else if (!ft_strncmp(str, "F ", 2))
         {
-            bool_color = parse_color(cub, str2[1], 'F');
+            // trim 
+            trimed_str = ft_strtrim(&str[2], " ");
+            bool_color = parse_color(cub, trimed_str, 'F');// F 98,29,28 ,
             if (bool_color == 0)
                 return (0);
         }
-        else if (!ft_strncmp(str2[0], "C", 2))
+        else if (!ft_strncmp(str, "C ", 2))
         {
-            bool_color = parse_color(cub, str2[1], 'C');
+            // trim 
+            trimed_str = ft_strtrim(&str[2], " ");
+            bool_color = parse_color(cub, trimed_str, 'C');
             if (bool_color == 0)
                 return (0);
         }
         else
             return (ft_error(cub, "Error: in map\n"));
-    }
     return (1);
 }
 
@@ -201,15 +203,13 @@ void fill_empty_spaces(t_cub *cub)
 
 int check_textures(t_cub *cub)
 {
-    int i;
 
     if (!cub->map.no_path || !cub->map.so_path || !cub->map.we_path || !cub->map.ea_path
         || !cub->map.floor.floor || !cub->map.ceiling.ceiling)
         return (0);
-    i = 0;
     if (open(cub->map.no_path, O_RDONLY) < 0 || open(cub->map.so_path, O_RDONLY) < 0 
         || open(cub->map.we_path, O_RDONLY) < 0 || open(cub->map.ea_path, O_RDONLY) < 0)
-        return (0);
+        return (0);// those arent needed but for now i will keep them
     return (1);
 }
 int check_map(t_cub *cub)

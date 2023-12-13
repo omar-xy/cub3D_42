@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:20:47 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/12 23:49:24 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/13 02:46:39 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,10 @@ int ft_parse_map(t_cub *cub, int fd)
     char *line;
     char *hold_file;
     int flg;
+    int count;
 
     flg = 0;
+    count = 0;
     hold_file = ft_strdup("");
     while(true)
     {
@@ -68,12 +70,15 @@ int ft_parse_map(t_cub *cub, int fd)
                 return (ft_error(cub, "Error: Wrong map, 0\n"));
             if (!store_textures(cub, line))
                 return (0);
+            count++;
         }
         free(line);
     }
+    if (count != 6)
+        return (ft_error(cub, "Error: Wrong map, 1\n"));
     hold_file = ft_strtrim(hold_file, "\n");
     if (ft_strnstr(hold_file, "\n\n", ft_strlen(hold_file)))
-        return (ft_error(cub, "Error: Wrong map, 1\n"));
+        return (ft_error(cub, "Error: Wrong map, 2\n"));
     cub->map.store_map = ft_split(hold_file, '\n');
     free(line);
     free(hold_file);
