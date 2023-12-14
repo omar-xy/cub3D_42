@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:14:10 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/12 23:01:34 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/14 21:31:34 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,21 @@
 # include <math.h>
 # include "../libft/libft.h"
 # include "../MLX42/include/MLX42/MLX42.h"
+# include "defines.h"
 
 // # include "structs.h"
 
-# include "defines.h"
 
 // # include "prototypes.h"
-
-
 typedef struct s_floor
 {
     char *floor;
     int		r;
     int		g;
     int		b;
+
 }				t_floor;
+
 
 typedef struct s_ceiling
 {
@@ -111,4 +111,5 @@ void    fill_empty_spaces(t_cub *cub);
 int     check_map(t_cub *cub);
 int     check_textures(t_cub *cub);
 int		ft_error(t_cub *cub, char *str);
+void free_towd(char **str);
 #endif

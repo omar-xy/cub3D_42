@@ -1,11 +1,11 @@
+EA ./libft/Makefile
 NO ./Makefile 
 SO ./libft/ft_bzero.c
-WE 
+WE ./libft/ft_isdigit.c
 
-F       1,1,1
+F 1,1,
 C 225,30,0   
 
-EA ./libft/Makefile
 
 
 

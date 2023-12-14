@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 20:03:19 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/13 04:17:23 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/14 21:24:56 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,21 @@ int count_towd_arr(char **str)
     return (i);
 }
 
-int parse_color(t_cub *cub, char *line, char flag)
+void free_towd(char **str)
+{
+    int i;
+
+    i = 0;
+    while(str[i])
+    {
+        free(str[i]);
+        i++;
+    }
+    free(str);
+}
+
+
+int  parse_color(t_cub *cub, char *line, char flag)
 {
     int i;
     int j;
@@ -85,7 +99,7 @@ int parse_color(t_cub *cub, char *line, char flag)
     str = ft_split(line, ',');
     i = count_towd_arr(str);
     if (i != 3)
-        return (ft_error(cub, "Error: Wrong color2\n"));
+        return (free_towd(str), ft_error(cub, "Error: Wrong color2\n"));
     i = 0;
     while(str[i])
     {
@@ -93,14 +107,14 @@ int parse_color(t_cub *cub, char *line, char flag)
         while(str[i][j])
         {
             if (!ft_isdigit(str[i][j]))
-                return (ft_error(cub, "Error: Wrong color3\n"));
+                return (free_towd(str), ft_error(cub, "Error: Wrong color3\n"));
             j++;
         }
         i++;
     }
     if (!set_color(cub, str, flag))
-        return (ft_error(cub, "Error: Wrong color4\n"));
-    return (1);
+        return (free_towd(str), ft_error(cub, "Error: Wrong color4\n"));
+    return (free_towd(str), 1);
 }
 
 
@@ -111,39 +125,37 @@ int store_textures(t_cub *cub, char *line)
     // char **str2;
     int bool_color = 0;
 
+    trimed_str = NULL;
     str = ft_strtrim(line, "\n");
     if (!str)
         return (0);
-    // str2 = ft_split(str, ' ');
-    // if (!str2)
-    //     return (0);
-        if (!ft_strncmp(str, "NO ", 3))
-            cub->map.no_path = ft_strtrim(&str[2]," ");
-        else if (!ft_strncmp(str, "SO ", 3))
-            cub->map.so_path = ft_strtrim(&str[2]," ");
-        else if (!ft_strncmp(str, "WE ", 3))
-            cub->map.we_path = ft_strtrim(&str[2]," ");
-        else if (!ft_strncmp(str, "EA ", 3))
-            cub->map.ea_path = ft_strtrim(&str[2]," ");
-        else if (!ft_strncmp(str, "F ", 2))
-        {
-            // trim 
-            trimed_str = ft_strtrim(&str[2], " ");
-            bool_color = parse_color(cub, trimed_str, 'F');// F 98,29,28 ,
-            if (bool_color == 0)
-                return (0);
-        }
-        else if (!ft_strncmp(str, "C ", 2))
-        {
-            // trim 
-            trimed_str = ft_strtrim(&str[2], " ");
-            bool_color = parse_color(cub, trimed_str, 'C');
-            if (bool_color == 0)
-                return (0);
-        }
-        else
-            return (ft_error(cub, "Error: in map\n"));
-    return (1);
+    if (!ft_strncmp(str, "NO ", 3))
+        cub->map.no_path = ft_strtrim(&str[2]," ");
+    else if (!ft_strncmp(str, "SO ", 3))
+        cub->map.so_path = ft_strtrim(&str[2]," ");
+    else if (!ft_strncmp(str, "WE ", 3))
+        cub->map.we_path = ft_strtrim(&str[2]," ");
+    else if (!ft_strncmp(str, "EA ", 3))
+        cub->map.ea_path = ft_strtrim(&str[2]," ");
+    else if (!ft_strncmp(str, "F ", 2))
+    {
+        // trim 
+        trimed_str = ft_strtrim(&str[2], " ");
+        bool_color = parse_color(cub, trimed_str, 'F');// F 98,29,28 ,
+        if (bool_color == 0)
+            return (free(trimed_str), 0);
+    }
+    else if (!ft_strncmp(str, "C ", 2))
+    {
+        // trim 
+        trimed_str = ft_strtrim(&str[2], " ");
+        bool_color = parse_color(cub, trimed_str, 'C');
+        if (bool_color == 0)
+            return (free(trimed_str), 0);
+    }
+    else
+        return (free(str), ft_error(cub, "Error: in map\n"));
+    return (free(trimed_str), free(str), 1);
 }
 
 
@@ -194,11 +206,10 @@ void fill_empty_spaces(t_cub *cub)
         j = ft_strlen(map[i]);
         while(j < cub->map.width)
         {
-            map[i] = ft_strjoin(map[i], " ");
+            cub->map.store_map[i] = ft_strjoin_free(map[i], " ");
             j++;
         }
     }
-    cub->map.store_map = map;
 }
 
 int check_textures(t_cub *cub)

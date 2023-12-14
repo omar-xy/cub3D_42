@@ -6,7 +6,7 @@
 #    By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/26 23:12:18 by otaraki           #+#    #+#              #
-#    Updated: 2023/12/12 20:08:50 by otaraki          ###   ########.fr        #
+#    Updated: 2023/12/14 21:40:25 by otaraki          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ CC := cc
 
 # I := -I inc -I libft -I minilibx
 # L := -L libft -L minilibx
-CFLAGS := -g  -Wall -Wextra -fsanitize=address
+CFLAGS := -g  -Wall -Wextra
 # -fsanitize=address
 
 HEADER := inc/cub3d.h

@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:20:47 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/13 02:46:39 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/14 21:41:35 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void ft_free_cub(t_cub *cub)
     //     free(cub->map.so_path);
     // if (cub->map.no_path)
     //     free(cub->map.no_path);
+    // make sure you check this out
 }
 
 int		ft_error(t_cub *cub, char *str)
@@ -62,7 +63,7 @@ int ft_parse_map(t_cub *cub, int fd)
         {
             if (detect_map(line))
                 flg = 1;
-            hold_file = ft_strjoin(hold_file, line);
+            hold_file = ft_strjoin_free(hold_file, line);
         }
         if (line[0] != '\n' && !detect_map(line))
         {
@@ -102,17 +103,28 @@ int ft_parse_cub(t_cub *cub, char *arg)
 
     if (fd < 0)
         return (ft_error(cub, "Error\nCan't open file\n"));
+    ft_bzero(&cub->map, sizeof(t_map));
     ft_bzero(cub, sizeof(t_cub));
     if (!ft_parse_map(cub, fd))
         return (0);
     return (1);
 }
 
+void lk(void)
+{
+    system("leaks cub3d");
+}
+
+
+
 int		main(int argc, char **argv)
 {
     t_cub	cub;
     char *str;
 
+
+
+    atexit(lk);
     if (argc != 2)
         return (ft_error(&cub, "Error\nWrong number of arguments\n"));
     str = ft_strnstr(argv[1], ".cub", ft_strlen(argv[1]));
@@ -120,6 +132,11 @@ int		main(int argc, char **argv)
         return (ft_error(&cub, "Error: the map must end with .cub\n"));
     if (!ft_parse_cub(&cub, argv[1]))
         return (ft_error(&cub, "ft_parse_cub() failed\n"));
+    free_towd(cub.map.store_map);
+    free(cub.map.no_path);
+    free(cub.map.so_path);
+    free(cub.map.we_path);
+    free(cub.map.ea_path);
     // ft_init_cub3d(&cub);
     // if (argc == 3 && ft_strncmp(argv[2], "--save", 7) == 0)
     //     ft_save_bmp(&cub);
