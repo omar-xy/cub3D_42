@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:20:47 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/14 21:41:35 by otaraki          ###   ########.fr       */
+/*   Updated: 2023/12/14 21:44:59 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ int		main(int argc, char **argv)
         return (ft_error(&cub, "Error: the map must end with .cub\n"));
     if (!ft_parse_cub(&cub, argv[1]))
         return (ft_error(&cub, "ft_parse_cub() failed\n"));
+// from here
     free_towd(cub.map.store_map);
     free(cub.map.no_path);
     free(cub.map.so_path);
