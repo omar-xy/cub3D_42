@@ -6,29 +6,31 @@
 #    By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/26 23:12:18 by otaraki           #+#    #+#              #
-#    Updated: 2023/12/14 21:40:25 by otaraki          ###   ########.fr        #
+#    Updated: 2024/01/20 00:21:48 by otaraki          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
-
 
 EXE := cub3d
 
 ARCH := libft/libft.a
-MLX := minilibx/libmlx.a
+MLX := MLX42/build/libmlx42.a
 
-# MLX_FLAGS := -L minilibx -lmlx -framework OpenGL -framework AppKit
+
+# MLX_FLAGS := -L MLX42 -lmlx -framework OpenGL -framework AppKit
+MLX_FLAGS := -lglfw -framework Cocoa -framework OpenGL -framework IOKit
 
 CC := cc 
+CFLAGS := -g -Wall -Wextra -Werror -fsanitize=address
 
-# I := -I inc -I libft -I minilibx
-# L := -L libft -L minilibx
-CFLAGS := -g  -Wall -Wextra
-# -fsanitize=address
+I = -I /Users/${USER}/.brew/Cellar/glfw/3.3.9/include/GLFW
+L = -L /Users/${USER}/.brew/Cellar/glfw/3.3.9/lib
+
+# I := -I inc -I libft -I MLX42
+# L := -L libft -L MLX42
 
 HEADER := inc/cub3d.h
 
-FILES := cub3d parse_utils
+FILES := cub3d parse_utils raycasting keyhandle
 
 SRC := $(FILES:=.c)
 
@@ -45,10 +47,10 @@ library :
 	make -C libft
 
 $(EXE) : $(OBJ) | library
-	$(CC) $(CFLAGS) $(OBJ) $(ARCH) -o $(EXE) 
+	$(CC) $(CFLAGS) $(MLX_FLAGS) $(OBJ) $(ARCH) $(MLX) $(L) $(I) -o $(EXE) 
 
 %.o : %.c $(HEADER)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ $(I)
 
 clean :
 	make clean -C libft
@@ -59,6 +61,10 @@ fclean : clean
 	$(RM) $(EXE)
 
 re : fclean all
+
+run:
+	make all;
+	./cub3d map.cub
 
 git :
 	git add .

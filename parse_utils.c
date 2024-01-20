@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 20:03:19 by otaraki           #+#    #+#             */
-/*   Updated: 2023/12/14 21:24:56 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/20 18:06:06 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,13 +253,65 @@ int check_map(t_cub *cub)
             }
             if (map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'W' || map[i][j] == 'E')
             {
-                cub->player.x = j;
-                cub->player.y = i;
+                cub->player.x = j * 64 + (64 / 2);
+                cub->player.y = i * 64 + (64 / 2);
                 cub->player.dir = map[i][j];
+                cub->map.store_map[i][j] = '0';
             }
         }
     }
     if (cub->player.dir == '\0')
         return (0);
 	return (1);
+}
+
+int ft_parse_map(t_cub *cub, int fd)
+{
+    char *line;
+    char *hold_file;
+    int flg;
+    int count;
+
+    flg = 0;
+    count = 0;
+    hold_file = ft_strdup("");
+    while(true)
+    {
+        line =  get_next_line(fd);
+        if (!line)
+            break;
+        if ((detect_map(line) || line[0] == '\n'))
+        {
+            if (detect_map(line))
+                flg = 1;
+            hold_file = ft_strjoin_free(hold_file, line);
+        }
+        if (line[0] != '\n' && !detect_map(line))
+        {
+            if (flg == 1)
+                return (ft_error(cub, "Error: Wrong map, 0\n"));
+            if (!store_textures(cub, line))
+                return (0);
+            count++;
+        }
+        free(line);
+    }
+    if (count != 6)
+        return (ft_error(cub, "Error: Wrong map, 1\n"));
+    hold_file = ft_strtrim(hold_file, "\n");
+    if (ft_strnstr(hold_file, "\n\n", ft_strlen(hold_file)))
+        return (ft_error(cub, "Error: Wrong map, 2\n"));
+    cub->map.store_map = ft_split(hold_file, '\n');
+    free(line);
+    free(hold_file);
+    calculate_map_size(cub);
+    fill_empty_spaces(cub);
+    // int i = -1;
+    // while (cub->map.store_map[++i])
+    //     printf("[%s]\n", cub->map.store_map[i]);
+    if (!check_textures(cub))
+        return (ft_error(cub, "Error: Wrong texture P\n"));
+    if (!check_map(cub))
+        return (ft_error(cub, "Error: Wrong map, 2\n"));
+    return (1);
 }
