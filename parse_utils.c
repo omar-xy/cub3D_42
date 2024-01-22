@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahamrad <ahamrad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 20:03:19 by otaraki           #+#    #+#             */
-/*   Updated: 2024/01/20 18:06:06 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/22 16:23:57 by ahamrad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,6 @@ int store_textures(t_cub *cub, char *line)
 {
     char *str;
     char *trimed_str;
-    // char **str2;
     int bool_color = 0;
 
     trimed_str = NULL;
@@ -220,7 +219,7 @@ int check_textures(t_cub *cub)
         return (0);
     if (open(cub->map.no_path, O_RDONLY) < 0 || open(cub->map.so_path, O_RDONLY) < 0 
         || open(cub->map.we_path, O_RDONLY) < 0 || open(cub->map.ea_path, O_RDONLY) < 0)
-        return (0);// those arent needed but for now i will keep them
+        return (0);
     return (1);
 }
 int check_map(t_cub *cub)
@@ -306,12 +305,5 @@ int ft_parse_map(t_cub *cub, int fd)
     free(hold_file);
     calculate_map_size(cub);
     fill_empty_spaces(cub);
-    // int i = -1;
-    // while (cub->map.store_map[++i])
-    //     printf("[%s]\n", cub->map.store_map[i]);
-    if (!check_textures(cub))
-        return (ft_error(cub, "Error: Wrong texture P\n"));
-    if (!check_map(cub))
-        return (ft_error(cub, "Error: Wrong map, 2\n"));
     return (1);
 }

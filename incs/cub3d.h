@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahamrad <ahamrad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:14:10 by otaraki           #+#    #+#             */
-/*   Updated: 2024/01/20 18:07:06 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/22 16:08:13 by ahamrad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ void    free_towd(char **str);
 
 void    init_window(t_cub *cub);
 void    draw(t_cub *cub);
+// void    keyhandle(t_cub *cub);
 void    keyhandle(mlx_key_data_t key_data, void *cub);
 void    draw_player(t_cub *cub);
 
@@ -128,6 +129,6 @@ void    draw_line(double angle, double x, double y, double len, t_cub *cub);
 void    raycaster(t_cub *cub);
 void    rendering(t_cub *cub, double angle_ray, int j);
 
-double normalize_angle(double angle);
+double  normalize_angle(double angle);
 
 #endif

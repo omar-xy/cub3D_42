@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahamrad <ahamrad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 02:23:30 by ahamrad           #+#    #+#             */
-/*   Updated: 2024/01/20 18:28:20 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/22 18:32:49 by ahamrad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,17 @@ double  distance(double x1, double x2, double y1, double y2)
 {
     return (sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2)));
 }
+
+int get_ceiling(t_ceiling *ceiling)
+{
+    return (ceiling->r << 16 | ceiling->g << 8 | ceiling->b);
+}
+
+int get_floor(t_floor *floor)
+{
+    return (floor->r << 16 | floor->g << 8 | floor->b);
+}
+
 
 void    check_directions(t_cub *cub, double angle_ray)
 {
@@ -145,34 +156,43 @@ double     get_ray_length(t_cub *cub, double angle_ray)
 
 void    rendering(t_cub *cub, double angle_ray, int j)
 {
-    double  distance_to_wall = get_ray_length(cub, angle_ray) * cos(angle_ray);
+    double  distance_to_wall = get_ray_length(cub, angle_ray) * cos(angle_ray - cub->player.angle);
     double  wall_projection = (WINDOW_WIDTH / 2) / tan(30 * M_PI / 180);
     double  wall = (64 / distance_to_wall) * wall_projection;
 
     double  start = (WINDOW_HEIGHT / 2) - (wall / 2);
     int i = 0;
-    if (wall >= WINDOW_HEIGHT)
-    {
-        while (i < WINDOW_HEIGHT)
-        {
-            mlx_put_pixel(cub->mlx.img.img, j, i, 0x159463);
-            i++;
-        }
-        return ;
-    }
+    // if (wall >= WINDOW_HEIGHT)
+    // {
+    //     while (i < WINDOW_HEIGHT)
+    //     {
+    //         mlx_put_pixel(cub->mlx.img.img, j, i, 0x159463);
+    //         i++;
+    //     }
+    //     return ;
+    // }
     while (i < start)
     {
-        mlx_put_pixel(cub->mlx.img.img, j, i, 0xfa2569);
+        // printf("%f : start\n", start);
+        // // printf("%i : i\n", i);     
+        // // printf("%f wall\n", wall);
+        // printf("%f : angle ray\n", cos(angle_ray));
+        // printf("%i : i\n", i);
+        // printf("%i : j\n", j);
+        if (i < WINDOW_HEIGHT && j < WINDOW_WIDTH && i > 0 && j > 0)
+            mlx_put_pixel(cub->mlx.img.img, j, i, get_ceiling(&cub->map.ceiling));
         i++;
     }
     while (i < start + wall)
     {
-        mlx_put_pixel(cub->mlx.img.img, j, i, 0x159463);
+        if (i < WINDOW_HEIGHT && j < WINDOW_WIDTH && i > 0 && j > 0)
+            mlx_put_pixel(cub->mlx.img.img, j, i, 0x159463);
         i++;
     }
     while (i < WINDOW_HEIGHT)
     {
-        mlx_put_pixel(cub->mlx.img.img, j, i, 0xfa2569);
+        if (i < WINDOW_HEIGHT && j < WINDOW_WIDTH && i > 0 && j > 0)
+            mlx_put_pixel(cub->mlx.img.img, j, i, get_floor(&cub->map.floor));
         i++;
     }
 }
@@ -185,11 +205,11 @@ void    raycaster(t_cub *cub)
     // printf("%f : ray angle\n", angle_ray);
     // printf("%f : limit\n",  cub->player.angle + (FOV_ANGLE / 2));
     // printf("%f : fov\n", (FOV_ANGLE / 2));
-    while (angle_ray < cub->player.angle + (FOV_ANGLE / 2) && j < WINDOW_WIDTH)
+    while (angle_ray < cub->player.angle + (FOV_ANGLE / 2) + 10 && j < WINDOW_WIDTH)
     {
         // printf("salam\n");
-        draw_line(angle_ray, cub->player.x, cub->player.y, get_ray_length(cub, angle_ray), cub);
-        // rendering(cub, angle_ray, j);
+        // draw_line(angle_ray, cub->player.x, cub->player.y, get_ray_length(cub, angle_ray), cub);
+        rendering(cub, angle_ray, j);
         angle_ray = normalize_angle(mini_angle + angle_ray);
         j++;
     }
@@ -256,6 +276,8 @@ void    init_window(t_cub *cub)
 // {
 //     return (r << 24 | g << 16 | b << 8 | a);
 // }
+
+
 void    draw(t_cub *cub)
 {
     //         int color = ft_pixel(
@@ -263,25 +285,25 @@ void    draw(t_cub *cub)
 	// rand() % 0xFF, // G
 	// rand() % 0xFF, // B
 	// rand() % 0xFF );
-    for (int i = 0; i <  WINDOW_HEIGHT; i++)
-    {
-        // printf("%s\n", cub->map.store_map[i]);
-        for (int j = 0; j < WINDOW_WIDTH; j++)
-        {
-            if(cub->map.store_map[i / TILE_SIZE][j / TILE_SIZE] == '1')
-            {
+    // for (int i = 0; i <  WINDOW_HEIGHT; i++)
+    // {
+    //     // printf("%s\n", cub->map.store_map[i]);
+    //     for (int j = 0; j < WINDOW_WIDTH; j++)
+    //     {
+    //         if(cub->map.store_map[i / TILE_SIZE][j / TILE_SIZE] == '1')
+    //         {
                 
-                mlx_put_pixel(cub->mlx.img.img, j, i, 0xFFFF);
-            }
-            else if(cub->map.store_map[i / 64][j / 64] == 'N')// 'N' is the player 
-            {
-                mlx_put_pixel(cub->mlx.img.img, (int)cub->player.y, (int)cub->player.x, 0xffffff);
+    //             mlx_put_pixel(cub->mlx.img.img, j, i, 0xFFFF);
+    //         }
+    //         // else if(cub->map.store_map[i / 64][j / 64] == 'N')// 'N' is the player 
+    //         // {
+    //         //     mlx_put_pixel(cub->mlx.img.img, (int)cub->player.y, (int)cub->player.x, 0xffffff);
                 
-            }
-            else
-                mlx_put_pixel(cub->mlx.img.img, j, i, 0);
-        }
-    }
+    //         // }
+    //         else
+    //             mlx_put_pixel(cub->mlx.img.img, j, i, color);
+    //     }
+    // }
     // mlx_put_pixel(cub->mlx.img.img, (int)cub->player.y, (int)cub->player.x, 0xffffff);
     for (int i = 0; i <= WINDOW_WIDTH; i++)
     {
