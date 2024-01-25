@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:14:10 by otaraki           #+#    #+#             */
-/*   Updated: 2024/01/25 19:24:43 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/25 21:25:07 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,17 @@ typedef struct s_player
 
 typedef struct s_ray
 {
-    // double	xh; _
-    // double	yh;
-    // double	xv; |
-    // double	yv;
+    bool   vertical_hit;
+    bool   horizontal_hit;
+    double  v_dis;
+    double  h_dis;
+    double	xh;
+    double	yh;
+    double	xv;
+    double	yv;
     double  deltax;
     double  deltay;
     int up_or_down;
-    int h_y_p;
-    int v_x_p;
     int right_or_left;
     double  angle_ray;
 }				t_ray;

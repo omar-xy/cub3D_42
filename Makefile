@@ -6,7 +6,7 @@
 #    By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/26 23:12:18 by otaraki           #+#    #+#              #
-#    Updated: 2024/01/25 17:45:31 by otaraki          ###   ########.fr        #
+#    Updated: 2024/01/25 22:47:47 by otaraki          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ MLX := MLX42/build/libmlx42.a
 MLX_FLAGS := -lglfw -framework Cocoa -framework OpenGL -framework IOKit
 
 CC := cc 
-CFLAGS := -g -Wall -Wextra -Werror -fsanitize=address
+CFLAGS := -g -Wall -Wextra -Werror -Ofast -fsanitize=address 
 
 I = -I /Users/${USER}/.brew/Cellar/glfw/3.3.9/include/GLFW
 L = -L /Users/${USER}/.brew/Cellar/glfw/3.3.9/lib

@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:23:52 by ahamrad           #+#    #+#             */
-/*   Updated: 2024/01/25 19:27:37 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/25 22:53:08 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ void move_player(t_cub *cub, int turn_D, int walk_D)
 
 
 // mlx_texture_t *jj;÷
-    cub->player.angle = normalize_angle(cub->player.angle + (10 * (M_PI / 180) * turn_D));
+    cub->player.angle = normalize_angle(cub->player.angle + (30 * (M_PI / 180) * turn_D));
     if (cub->player.angle < 0)
        cub->player.angle = normalize_angle(cub->player.angle + 2 * M_PI);
     // if (cub->player.angle > 2 * M_PI)
     //    cub->player.angle = 0;
-    j = cub->player.x + (cos(cub->player.angle) * 10 * walk_D);
-    i = cub->player.y + (sin(cub->player.angle) * 10 * walk_D);
+    j = cub->player.x + (cos(cub->player.angle) * 30 * walk_D);
+    i = cub->player.y + (sin(cub->player.angle) * 30 * walk_D);
     if (cub->map.store_map[(i / TILE_SIZE)][(j / TILE_SIZE)] == '1')// check next tile
         return ;
     cub->player.x = j;

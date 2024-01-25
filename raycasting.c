@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 02:23:30 by ahamrad           #+#    #+#             */
-/*   Updated: 2024/01/25 19:30:52 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/25 22:56:28 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ double  distance(double x1, double x2, double y1, double y2)
 
 int get_ceiling(t_ceiling *ceiling)
 {
-    return (ceiling->r << 24 | ceiling->g << 16 | ceiling->b << 8 | 0);
+    return (ceiling->r << 24 | ceiling->g << 16 | ceiling->b << 8 | 255);
 }
 
 int get_floor(t_floor *floor)
 {
-    return (floor->r << 24 | floor->g << 26 | floor->b << 8 | 0);
+    return (floor->r << 24 | floor->g << 26 | floor->b << 8 | 255);
 }
 
 
@@ -79,15 +79,16 @@ double     horizontal_inter(t_cub *cub, double angle_ray)
         y = -1;
     else
         y = 1;
-    
-    // xa = cub->player.x + ((int)cub->player.y % 64) / tan(angle_ray) + adjust_x(cub, angle_ray, 'h');
-    // ya = cub->player.y - ((int)cub->player.y % 64) + adjust_y(cub, angle_ray, 'h');
     ya = cub->player.y - ((int)cub->player.y % 64);
     if (cub->ray.up_or_down == 0)
         ya += 64;
     xa = cub->player.x + (ya - cub->player.y) / tan(angle_ray);
     if (is_wall(cub, xa, ya + y))
+    {
+        cub->ray.xh = xa;
+        cub->ray.yh = ya;
         return (distance(xa, cub->player.x, ya, cub->player.y));
+    }
     if (tan(angle_ray) == 0)
         cub->ray.deltax = 64;
     else
@@ -104,6 +105,8 @@ double     horizontal_inter(t_cub *cub, double angle_ray)
         xa += cub->ray.deltax;
         ya += cub->ray.deltay;
     }
+    cub->ray.xh = xa;
+    cub->ray.yh = ya;
     return (distance(xa, cub->player.x, ya, cub->player.y));
 }
 
@@ -118,14 +121,16 @@ double     vertical_inter(t_cub *cub, double angle_ray)
         x = 1;
     else
         x = -1;
-    // xa = cub->player.x - ((int)cub->player.x % 64) + adjust_x(cub, angle_ray, 'v');
-    // ya = cub->player.y - ((((int)cub->player.x) % 64) * tan(angle_ray)) + adjust_y(cub, angle_ray, 'v');
     xa = cub->player.x - ((int)cub->player.x % 64);
     if (cub->ray.right_or_left == 1)
         xa += 64;
     ya = cub->player.y + (xa - cub->player.x) * tan(angle_ray);
     if (is_wall(cub, xa + x, ya))
+    {
+        cub->ray.xv = xa;
+        cub->ray.yv = ya;
         return (distance(xa, cub->player.x, ya, cub->player.y));
+    }
     cub->ray.deltax = 64;
     cub->ray.deltay = 64 * tan(angle_ray);
     if (cub->ray.right_or_left == 0)
@@ -137,21 +142,26 @@ double     vertical_inter(t_cub *cub, double angle_ray)
     while (is_wall(cub, xa + x, ya) != 1)
     {
         xa += cub->ray.deltax;
-        ya += cub->ray.deltay; 
+        ya += cub->ray.deltay;
     }
+    cub->ray.xv = xa;
+    cub->ray.yv = ya;
     return (distance(xa, cub->player.x, ya, cub->player.y));
 }
 
 double     get_ray_length(t_cub *cub, double angle_ray)
 {
-    double  h;
-    double  v;
-
-    h = horizontal_inter(cub, angle_ray);
-    v = vertical_inter(cub, angle_ray);
-    if (h > v)
-        return (v);
-    return (h);
+    cub->ray.horizontal_hit = false;
+    cub->ray.vertical_hit = false;
+    cub->ray.h_dis = horizontal_inter(cub, angle_ray);
+    cub->ray.v_dis = vertical_inter(cub, angle_ray);
+    if (cub->ray.h_dis > cub->ray.v_dis)
+    {
+        cub->ray.vertical_hit = true;
+        return (cub->ray.v_dis);
+    }
+    cub->ray.horizontal_hit = true;
+    return (cub->ray.h_dis);
 }
 
 
@@ -185,19 +195,18 @@ void    rendering(t_cub *cub, double angle_ray, int j)
     int w_h = cub->map.height * TILE_SIZE;
     double  distance_to_wall = get_ray_length(cub, angle_ray) * cos(angle_ray - cub->player.angle);
     double  wall_projection = (w_w / 2) / tan(30 * M_PI / 180);
-    double  wall = (64 / distance_to_wall) * wall_projection;
-
+    double  wall = ( 64 / distance_to_wall) * wall_projection;
     double  start = (w_h / 2) - (wall / 2);
+    // double end = (w_h / 2) + (wall / 2);
+
+    int ratio;
+    int n_ratio;
+
+    if (cub->ray.vertical_hit == true)
+        ratio = (cub->ray.yv / TILE_SIZE - (int)(cub->ray.yv / TILE_SIZE)) * cub->map.no_img->width;
+    else if (cub->ray.horizontal_hit == true)
+        ratio = (cub->ray.xh / TILE_SIZE - (int)(cub->ray.xh / TILE_SIZE)) * cub->map.no_img->width; 
     int i = 0;
-    // if (wall >= w_h)
-    // {
-    //     while (i < w_h)
-    //     {
-    //         mlx_put_pixel(cub->mlx.img.img, j, i, 0x159463);
-    //         i++;
-    //     }
-    //     return ;
-    // }
     while (i < start)
     {
         if (i < w_h && j < w_w && i > 0 && j > 0)
@@ -208,10 +217,9 @@ void    rendering(t_cub *cub, double angle_ray, int j)
     {
         if (i < w_h && j < w_w && i > 0 && j > 0)
         {
-            mlx_put_pixel(cub->img, j, i, 0x159463);
-            // mlx_texture_to_image();;
+            n_ratio = (i - start) * ((double)cub->map.no_img->height / wall);
+            mlx_put_pixel(cub->img, j, i, cub->map.no_img->img[ratio + (n_ratio * cub->map.no_img->width)]);
         }
-            
         i++;
     }
     while (i < w_h)

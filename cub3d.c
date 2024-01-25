@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:20:47 by otaraki           #+#    #+#             */
-/*   Updated: 2024/01/25 19:28:43 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/25 22:42:34 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,28 +84,33 @@ int rgb_to_int(int r, int g, int b, int a)
 
 void inital_text(t_img *img)
 {
-    mlx_texture_t *texture;
+    mlx_texture_t   *texture;
 
-    texture = mlx_load_png(img->path);
+    texture = mlx_load_png("mok.png");
     img->height = texture->height;
     img->width = texture->width;
-    printf("width: %d\n", texture->width);
-    printf("height: %d\n", texture->height);
-    unsigned int *buff = ft_calloc(sizeof(unsigned int) , (unsigned int)(texture->width * texture->height));
+    unsigned int *buff = (unsigned int *)malloc(sizeof(unsigned int) * (img->width * img->height));
     if (!buff)
-        return ;
-    for (int i = 0; i < (int)(texture->width * texture->height); i+=4)
-        buff[i] = rgb_to_int(buff[i], buff[i + 1], buff[i + 2], 255);
+        exit(0);
+    unsigned int j =0;
+    unsigned int i = 0;
+    while(i < img->height * img->width)
+    {
+        buff[i++] = rgb_to_int(texture->pixels[j], texture->pixels[j + 1], texture->pixels[j + 2], 255);
+        j += 4;
+    }
     img->img = buff;
+    // printf("%lu\n", ft_strlen((char *)buff));
+    
     mlx_delete_texture(texture);
 }
 
 void texture_init(t_cub *cub)
 {
-    cub->map.no_img = malloc(sizeof(t_img));
-    cub->map.so_img = malloc(sizeof(t_img));
-    cub->map.we_img = malloc(sizeof(t_img));
-    cub->map.ea_img = malloc(sizeof(t_img));
+    cub->map.no_img = ft_calloc(sizeof(t_img), 1);
+    cub->map.so_img = ft_calloc(sizeof(t_img), 1);
+    cub->map.we_img = ft_calloc(sizeof(t_img), 1);
+    cub->map.ea_img = ft_calloc(sizeof(t_img), 1);
     cub->map.no_img->path = cub->map.no_path;
     cub->map.so_img->path = cub->map.so_path;
     cub->map.we_img->path = cub->map.we_path;
@@ -137,7 +142,6 @@ int		main(int argc, char **argv)
     texture_init(&cub);
     raycaster(&cub);
     // mlx_image_to_window(cub.mlx.mlx, cub.mlx.img.img, 0, 0); 
-
     mlx_key_hook(cub.mlx, (void *)keyhandle, &cub);
     mlx_loop(cub.mlx);
     mlx_terminate(cub.mlx);
