@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamrad <ahamrad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 20:03:19 by otaraki           #+#    #+#             */
-/*   Updated: 2024/01/22 16:23:57 by ahamrad          ###   ########.fr       */
+/*   Updated: 2024/01/25 19:17:58 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ int  parse_color(t_cub *cub, char *line, char flag)
 }
 
 
+
 int store_textures(t_cub *cub, char *line)
 {
     char *str;
@@ -129,13 +130,13 @@ int store_textures(t_cub *cub, char *line)
     if (!str)
         return (0);
     if (!ft_strncmp(str, "NO ", 3))
-        cub->map.no_path = ft_strtrim(&str[2]," ");
+        cub->map.no_path = ft_strtrim(&str[2], " ");
     else if (!ft_strncmp(str, "SO ", 3))
-        cub->map.so_path = ft_strtrim(&str[2]," ");
+        cub->map.so_path = ft_strtrim(&str[2], " ");
     else if (!ft_strncmp(str, "WE ", 3))
-        cub->map.we_path = ft_strtrim(&str[2]," ");
+        cub->map.we_path = ft_strtrim(&str[2], " ");
     else if (!ft_strncmp(str, "EA ", 3))
-        cub->map.ea_path = ft_strtrim(&str[2]," ");
+        cub->map.ea_path = ft_strtrim(&str[2], " ");
     else if (!ft_strncmp(str, "F ", 2))
     {
         // trim 
@@ -211,9 +212,10 @@ void fill_empty_spaces(t_cub *cub)
     }
 }
 
+
+
 int check_textures(t_cub *cub)
 {
-
     if (!cub->map.no_path || !cub->map.so_path || !cub->map.we_path || !cub->map.ea_path
         || !cub->map.floor.floor || !cub->map.ceiling.ceiling)
         return (0);

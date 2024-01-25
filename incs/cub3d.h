@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamrad <ahamrad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:14:10 by otaraki           #+#    #+#             */
-/*   Updated: 2024/01/22 16:08:13 by ahamrad          ###   ########.fr       */
+/*   Updated: 2024/01/25 19:24:43 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,14 @@ typedef struct s_ceiling
     int		b;
 }				t_ceiling;
 
+typedef struct s_img
+{
+    unsigned int	*img;
+    unsigned int height;
+    unsigned int width;
+    char *path;
+} t_img;
+
 typedef struct s_map
 {
     int		width;
@@ -53,6 +61,10 @@ typedef struct s_map
     char    *so_path;
     char    *we_path;
     char    *ea_path;
+    t_img   *no_img;
+    t_img   *so_img;
+    t_img   *we_img;
+    t_img   *ea_img;
     char	**store_map;
 }				t_map;
 
@@ -80,21 +92,14 @@ typedef struct s_ray
     double  angle_ray;
 }				t_ray;
 
-typedef struct s_img
-{
-    void	*img;
-    char	*addr;
-    int		bpp;
-    int		line_len;
-    int		endian;
-}				t_img;
-
-typedef struct s_mlx
-{
-    void	*mlx;
-    void	*win;
-    t_img	img;
-}				t_mlx;
+// typedef struct s_img
+// {
+//     void	*img;
+//     char	*addr;
+//     int		bpp;
+//     int		line_len;
+//     int		endian;
+// }				t_img;
 
 
 typedef struct s_cub
@@ -102,7 +107,8 @@ typedef struct s_cub
     t_map		map;
     t_player	player;
     t_ray		ray;
-    t_mlx		mlx;
+    mlx_t		*mlx;
+    mlx_image_t	*img;
 }				t_cub;
 
 
@@ -121,7 +127,7 @@ void    free_towd(char **str);
 void    init_window(t_cub *cub);
 void    draw(t_cub *cub);
 // void    keyhandle(t_cub *cub);
-void    keyhandle(mlx_key_data_t key_data, void *cub);
+void    keyhandle(mlx_key_data_t key_data, t_cub *cub);
 void    draw_player(t_cub *cub);
 
 int     is_wall(t_cub *cub, double x, double y);
