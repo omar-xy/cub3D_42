@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:20:47 by otaraki           #+#    #+#             */
-/*   Updated: 2024/01/25 22:42:34 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/27 14:35:08 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,10 @@ void texture_init(t_cub *cub)
     inital_text(cub->map.ea_img);
 }
 
+// void *casting()
+// {
+    
+// }
 
 int		main(int argc, char **argv)
 {
@@ -137,13 +141,14 @@ int		main(int argc, char **argv)
         return (ft_error(&cub, "ft_parse_cub() failed\n"));
     check_angle(&cub);
     init_window(&cub);
-    mlx_image_to_window(cub.mlx, cub.img, 0, 0);
     // draw(&cub);
+    mlx_image_to_window(cub.mlx, cub.img, 0, 0);
     texture_init(&cub);
-    raycaster(&cub);
-    // mlx_image_to_window(cub.mlx.mlx, cub.mlx.img.img, 0, 0); 
-    mlx_key_hook(cub.mlx, (void *)keyhandle, &cub);
+    
+    mlx_key_hook(cub.mlx, (void *)key_press, &cub);
+    mlx_loop_hook(cub.mlx, (void *)move_player, &cub);
     mlx_loop(cub.mlx);
-    mlx_terminate(cub.mlx);
+    // mlx_image_to_window(cub.mlx.mlx, cub.mlx.img.img, 0, 0); 
+    // mlx_terminate(cub.mlx);
     return (0);
 }

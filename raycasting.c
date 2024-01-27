@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 02:23:30 by ahamrad           #+#    #+#             */
-/*   Updated: 2024/01/25 22:56:28 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/27 12:38:02 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,13 @@ double  distance(double x1, double x2, double y1, double y2)
 
 int get_ceiling(t_ceiling *ceiling)
 {
-    return (ceiling->r << 24 | ceiling->g << 16 | ceiling->b << 8 | 255);
+    return (ceiling->r << 24 | ceiling->g << 16 | ceiling->b << 8 );
 }
 
 int get_floor(t_floor *floor)
 {
-    return (floor->r << 24 | floor->g << 26 | floor->b << 8 | 255);
+    
+    return (floor->r << 24 | floor->g << 16 | floor->b << 8 );
 }
 
 
@@ -210,7 +211,9 @@ void    rendering(t_cub *cub, double angle_ray, int j)
     while (i < start)
     {
         if (i < w_h && j < w_w && i > 0 && j > 0)
-            mlx_put_pixel(cub->img, j, i, get_ceiling(&cub->map.ceiling));
+        {
+            mlx_put_pixel(cub->img, j, i, rgb_to_int(cub->map.ceiling.r, cub->map.ceiling.g, cub->map.ceiling.b, 255));
+        }
         i++;
     }
     while (i < start + wall)
@@ -225,7 +228,9 @@ void    rendering(t_cub *cub, double angle_ray, int j)
     while (i < w_h)
     {
         if (i < w_h && j < w_w && i > 0 && j > 0)
-            mlx_put_pixel(cub->img, j, i, get_floor(&cub->map.floor));
+        {
+            mlx_put_pixel(cub->img, j, i, rgb_to_int(cub->map.floor.r, cub->map.floor.g, cub->map.floor.b, 255));
+        }
         i++;
     }
 }
@@ -239,7 +244,7 @@ void    raycaster(t_cub *cub)
     // printf("%f : ray angle\n", angle_ray);
     // printf("%f : limit\n",  cub->player.angle + (FOV_ANGLE / 2));
     // printf("%f : fov\n", (FOV_ANGLE / 2));
-    while (angle_ray < cub->player.angle + (FOV_ANGLE / 2) + 10  && j < window_width)
+    while (angle_ray < cub->player.angle + (FOV_ANGLE / 2)  && j < window_width)
     {
         // printf("salam\n");
         // draw_line(angle_ray, cub->player.x, cub->player.y, get_ray_length(cub, angle_ray), cub);
@@ -312,6 +317,10 @@ void    init_window(t_cub *cub)
 {
     int w_w = cub->map.width * TILE_SIZE;
     int w_h = cub->map.height * TILE_SIZE;
+    cub->player.move_down = 0;
+    cub->player.move_up = 0;
+    cub->player.move_left = 0;
+    cub->player.move_right = 0;
     cub->mlx = mlx_init(w_w, w_h, "Cub3D", false);
     cub->img = mlx_new_image(cub->mlx, w_w, w_h);
 }

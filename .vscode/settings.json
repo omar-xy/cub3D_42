@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "chrono": "c",
-        "unordered_map": "c"
+        "unordered_map": "c",
+        "mlx42_int.h": "c"
     }
 }
