@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 23:30:54 by otaraki           #+#    #+#             */
-/*   Updated: 2024/01/25 17:47:03 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/28 15:30:28 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,9 @@
 
 
 # define TILE_SIZE 64
-# define MAP_NUM_ROWS 15
-# define MAP_NUM_COLS 15
 
-# define WINDOW_WIDTH (MAP_NUM_COLS * TILE_SIZE)
-# define WINDOW_HEIGHT (MAP_NUM_ROWS * TILE_SIZE)
+# define WINDOW_WIDTH 1090
+# define WINDOW_HEIGHT 1090
 
 # define FOV_ANGLE (60 * (M_PI / 180)) 
 # define rayAngleSize (FOV_ANGLE / WINDOW_WIDTH)

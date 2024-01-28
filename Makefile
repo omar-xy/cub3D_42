@@ -6,7 +6,7 @@
 #    By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/26 23:12:18 by otaraki           #+#    #+#              #
-#    Updated: 2024/01/27 11:27:20 by otaraki          ###   ########.fr        #
+#    Updated: 2024/01/28 17:05:52 by otaraki          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ MLX := MLX42/build/libmlx42.a
 MLX_FLAGS := -lglfw -framework Cocoa -framework OpenGL -framework IOKit
 
 CC := cc 
-CFLAGS := -g -Wall -Wextra -Werror -Ofast 
+CFLAGS := -g -Wall -Wextra -Werror -Ofast -fsanitize=address
 
 I = -I /Users/${USER}/.brew/Cellar/glfw/3.3.9/include/GLFW
 L = -L /Users/${USER}/.brew/Cellar/glfw/3.3.9/lib
@@ -64,7 +64,7 @@ re : fclean all
 
 run:
 	make all;
-	./cub3d map.cub
+	./cub3d map1.cub
 
 git :
 	git add .

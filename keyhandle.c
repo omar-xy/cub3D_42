@@ -6,7 +6,7 @@
 /*   By: otaraki <otaraki@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 04:23:52 by ahamrad           #+#    #+#             */
-/*   Updated: 2024/01/27 14:37:39 by otaraki          ###   ########.fr       */
+/*   Updated: 2024/01/28 18:32:57 by otaraki          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ int is_left_right(t_player player)
 void move_player(t_cub *cub, int turn_D, int walk_D)
 {
     // raycaster(cub);
-    int  i;
-    int  j;
+    float i;
+    float  j;
 
 
     turn_D = is_left_right(cub->player);
@@ -64,10 +64,12 @@ void move_player(t_cub *cub, int turn_D, int walk_D)
         return ;
     if (cub->map.store_map[(((int)i - 10) / TILE_SIZE)][(((int)j - 10) / TILE_SIZE)] == '1')// check next tile
         return ;
-    // if (cub->map.store_map[((int)i / TILE_SIZE)][(int)(cub->player.x / TILE_SIZE)] == '1')// check next tile
-    //     return ;
-    // if (cub->map.store_map[(int)(cub->player.y / TILE_SIZE)][((int)j / TILE_SIZE)] == '1')// check next tile
-    //     return ;
+    if (cub->map.store_map[(((int)i) / TILE_SIZE)][(((int)j) / TILE_SIZE)] == '1')// check next tile
+        return ;
+    if (cub->map.store_map[((int)i / TILE_SIZE)][(int)(cub->player.x / TILE_SIZE)] == '1')// check next tile
+        return ;
+    if (cub->map.store_map[(int)(cub->player.y / TILE_SIZE)][((int)j / TILE_SIZE)] == '1')// check next tile
+        return ;
     cub->player.x = j;
     cub->player.y = i;
     // draw(cub);
@@ -99,20 +101,20 @@ int key_press(mlx_key_data_t key_data, t_cub *cub)
     return (0);
 }
 
-int    key_relase(mlx_key_data_t key_data, t_cub *cub)
-{
-    (void)key_data;
-    if (mlx_is_key_down(cub->mlx ,MLX_KEY_UP))
-        cub->player.move_up = 0;
-    if (mlx_is_key_down(cub->mlx ,MLX_KEY_LEFT))
-        cub->player.move_left = 0;
-    if (mlx_is_key_down(cub->mlx ,MLX_KEY_RIGHT))
-        cub->player.move_right = 0;
-    if (mlx_is_key_down(cub->mlx, MLX_KEY_DOWN))
-        cub->player.move_down = 0;  
-    return (0);
+// int    key_relase(mlx_key_data_t key_data, t_cub *cub)
+// {
+//     (void)key_data;
+//     if (mlx_is_key_down(cub->mlx ,MLX_KEY_UP))
+//         cub->player.move_up = 0;
+//     if (mlx_is_key_down(cub->mlx ,MLX_KEY_LEFT))
+//         cub->player.move_left = 0;
+//     if (mlx_is_key_down(cub->mlx ,MLX_KEY_RIGHT))
+//         cub->player.move_right = 0;
+//     if (mlx_is_key_down(cub->mlx, MLX_KEY_DOWN))
+//         cub->player.move_down = 0;  
+//     return (0);
 
-}
+// }
 
 // void    keyhandle(void *cub)
 // {
